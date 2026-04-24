@@ -14,12 +14,11 @@ namespace Myapi.Services
     public class AuthService: IAuthService
     {
         private readonly AppDbContext _appdbcontext;
-        private readonly IConfiguration _config;
-
-        public AuthService(AppDbContext context, IConfiguration config)
+        private readonly ITokenService _tokenService;
+        public AuthService(AppDbContext context, ITokenService tokenService)
         {
             _appdbcontext = context;
-            _config = config;
+            _tokenService = tokenService;
         }
 
         public async Task<ServiceResponse> RegisterRequestAsync(RegisterRequest request) 
@@ -71,34 +70,12 @@ namespace Myapi.Services
             if (!BCrypt.Net.BCrypt.Verify(loginrequest.Password, user.PasswordHash))
                 return new LoginResponse { Success = false, Message = "Wrong Password" };
 
-            var token = GenerateJwtToken(user);
+            var token = _tokenService.CreateToken(user);
 
             user.LastLoginAt = DateTime.UtcNow;
             await _appdbcontext.SaveChangesAsync();
 
             return new LoginResponse { Success = true, Message="Login Successful", token= token };
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[] {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username??string.Empty),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("UserId",user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role ?? "User")
-        };
-
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
 

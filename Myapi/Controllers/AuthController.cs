@@ -14,11 +14,9 @@ namespace Myapi.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _config;
         private readonly IAuthService _iauthservice;
-        public AuthController(IConfiguration config, IAuthService iauth)
+        public AuthController(IAuthService iauth)
         {
-            _config = config;
             _iauthservice = iauth;
         }
 
@@ -46,14 +44,14 @@ namespace Myapi.Controllers
         {
 
             if(request == null)
-                return NotFound();
+                return BadRequest("Login details are required.");
 
             var result = await _iauthservice.LoginResponseAsync(request);
 
             if (!result.Success)
                 return Unauthorized(result?.Message);
 
-            return Ok();
+            return Ok(result);
 
 
         }
