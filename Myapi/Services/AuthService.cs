@@ -39,7 +39,7 @@ namespace Myapi.Services
                     Email = request.Email,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash),
+                    PwdHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash),
                     CreatedAt = DateTime.UtcNow,
                     isActive = true,
                     
@@ -67,7 +67,7 @@ namespace Myapi.Services
             if (user == null)
                 return new LoginResponse { Success = false, Message = "User not found" };
 
-            if (!BCrypt.Net.BCrypt.Verify(loginrequest.Password, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(loginrequest.Password, user.PwdHash))
                 return new LoginResponse { Success = false, Message = "Wrong Password" };
 
             var token = _tokenService.CreateToken(user);

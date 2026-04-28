@@ -1,6 +1,19 @@
-@Myapi_HostAddress = http://localhost:5117
+@Myapi_HostAddress = https://localhost:7221
 
 GET {{Myapi_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+POST {{Myapi_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+    "Username": "test1",
+    "Email": "test1@test.com",
+    "PasswordHash": "test1pwd",
+    "FirstName": "test1",
+    "LastName": "test1"
+}
 
 ###

@@ -8,11 +8,32 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            // Be loose during local coding
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+        else
+        {
+            // Be strict in Production (Azure)
+            // Only allow your specific Azure website URL
+            policy.WithOrigins("https://myapi-appservice-egbbf7esbsbbg2g2.centralus-01.azurewebsites.net")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+    });
+});// Add services to the container.
 
 builder.Services.AddControllers();
-var connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+Console.WriteLine(connectionString);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -35,6 +56,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
