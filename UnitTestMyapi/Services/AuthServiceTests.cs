@@ -42,7 +42,7 @@ namespace UnitTestMyapi.Services
             {
                 Id = 1,
                 Username = "testuser",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                PwdHash = BCrypt.Net.BCrypt.HashPassword(password),
                 Role = "User"
             };
             _context.Users.Add(user);
