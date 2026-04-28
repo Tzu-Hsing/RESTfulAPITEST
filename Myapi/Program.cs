@@ -55,6 +55,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+Console.WriteLine("JWT Key: " + builder.Configuration["Jwt:Key"]);
+Console.WriteLine("JWT Issuer: " + builder.Configuration["Jwt:Issuer"]);
+Console.WriteLine("JWT Audience: " + builder.Configuration["Jwt:Audience"]);
+
+
 var app = builder.Build();
 
 app.UseCors();
