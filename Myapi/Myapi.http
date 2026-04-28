@@ -12,8 +12,16 @@ Content-Type: application/json
     "Username": "test1",
     "Email": "test1@test.com",
     "PasswordHash": "test1pwd",
-    "FirstName": "test1",
-    "LastName": "test1"
+    "FirstName": "test1"
+}
+
+###
+
+POST {{Myapi_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  //RegisterRequest
 }
 
 ###

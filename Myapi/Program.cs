@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -5,6 +7,7 @@ using Myapi.DAL;
 using Myapi.Interfaces;
 using Myapi.Services;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,10 +58,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-Console.WriteLine("JWT Key: " + builder.Configuration["Jwt:Key"]);
-Console.WriteLine("JWT Issuer: " + builder.Configuration["Jwt:Issuer"]);
-Console.WriteLine("JWT Audience: " + builder.Configuration["Jwt:Audience"]);
-
+// This one line finds EVERY validator in your project
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+// 2. Enable automatic validation for your Controllers
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 

@@ -8,21 +8,23 @@ namespace Myapi.Validators
         public RegisterRequestValidator()
         {
             RuleFor(x => x.Username)
-                .NotEmpty()
-                .MaximumLength(100);
-
+                .NotEmpty().WithMessage("User Name is required")
+                .MaximumLength(100).WithMessage("User Name reached maximum of 100 characters");
+            
             RuleFor(x => x.PasswordHash)
-                .NotEmpty()
-                .MaximumLength(100);
+                .NotEmpty().WithMessage("Password is required")
+                .MaximumLength(100).WithMessage("Password reached maximum of 100 characters")
+                .MinimumLength(6).WithMessage("Password must be at least 8 characters");
             RuleFor(x => x.Email)
-                .NotEmpty()
-                .MaximumLength(100);
+                .NotEmpty().WithMessage("Email is required")
+                .MaximumLength(100).WithMessage("Email reached maximum of 100 characters")
+                .EmailAddress().WithMessage("A valid email is required");
             RuleFor(x => x.FirstName)
-                .NotEmpty()
-                .MaximumLength(100);
+                .NotEmpty().WithMessage("First Name is required")
+                .MaximumLength(100).WithMessage("First Name reached maximum of 100 characters");
             RuleFor(x => x.LastName)
-                .NotEmpty()
-                .MaximumLength(100);
+                .NotEmpty().WithMessage("Last Name is required")
+                .MaximumLength(100).WithMessage("Last Name reached maximum of 100 characters");
 
         }
     }
